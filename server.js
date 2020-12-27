@@ -9,6 +9,9 @@ POST URL: https://test.payu.in/_payment
 For PayU Production (LIVE) Server:
 POST URL: https://secure.payu.in/_payment
 */
+
+require('dotenv').config()
+
 var express = require('express');
 var session = require('express-session');
 var app = express();
@@ -26,8 +29,9 @@ app.set('views', __dirname);
 
 //Unique merchant key provided by PayU along with salt. Salt is used for Hash signature 
 //calculation within application and must not be posted or transfered over internet. 
-var key = "";
-var salt = "";
+var key = process.env.KEY;
+var salt = process.env.SALT;
+var port = process.env.PORT;
 
 //Generate random txnid
 app.get('/', function(req,res) {	
@@ -76,7 +80,6 @@ app.post('/', function(req, res){
 		//generate hash with mandatory parameters and udf5
 		var cryp = crypto.createHash('sha512');
 		var text = key+'|'+data.txnid+'|'+data.amount+'|'+data.productinfo+'|'+data.firstname+'|'+data.email+'|||||'+data.udf5+'||||||'+salt;
-		console.log(text);
 		cryp.update(text);
 		var hash = cryp.digest('hex');		
 		res.setHeader("Content-Type", "text/json");
@@ -231,4 +234,6 @@ app.post('/response.html', function(req, res){
 		Then check for mihpayid and status.
 		
 		*/
-app.listen(3000);
+app.listen(port, () => {
+	console.log(`App listening at http://localhost:${port}`)
+});
