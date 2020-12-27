@@ -26,7 +26,10 @@
 
 
 ### Getting Started
+Copy `.env.example` to `.env` with correct credentials
  ```
+ cp .env.example .env
+ 
  npm install
 
  npm run start / node server.js / node server
